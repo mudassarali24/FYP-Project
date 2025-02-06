@@ -117,14 +117,14 @@
   }
   
   .logo {
-    background-image: url(./images/Full\ log.png);
+    background-image: url(../images/Full\ log.png);
     margin-top: -200px;
     margin-left: -30px;
     height: 320px;
   }
   
   .logo1 {
-    background-image: url(./images/Full\ log.png);
+    background-image: url(../images/Full\ log.png);
     background-size: auto;
     margin-top: -200px;
     margin-left: -30px;

@@ -10,7 +10,7 @@ body {
 }
 
 .nav-logo {
-  background-image: url(./images/Short\ logo.png);
+  background-image: url(../images/Short\ logo.png);
   background-size: cover;
   height: 55px;
   width: 80%;
