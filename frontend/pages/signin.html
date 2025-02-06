@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | SMT Store</title>
+    <link rel="stylesheet" href="../styles/login.css">
+</head>
+<body>
+    <!-- <div class="container">
+        <div class="logo1"></div> -->
+<div class="home">
+    <h1>Login</h1>
+
+   <form id="loginForm">
+    <input type="email" id="email" placeholder="Enter Email..." />
+    <input type="password" id="password" placeholder="Enter Password..." />
+    <button type="submit">Login</button>
+   </form>
+
+   <p class="register-text">
+    Don't have an account?
+    <a href="signup.html">Register</a>
+   </p>
+
+</div>
+
+
+
+<!-- <div class="go-btn">
+<button onclick="Register()">
+    <a href="storekeeperlogin.html">Go</a>
+</button> -->
+
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) =>
+    {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        console.log("Sending Data: Email: [" + email + "] Password: [" + password + "]");
+        var _body = JSON.stringify({email, password});
+        console.log("JSON Data: " + _body);
+        try {
+        const response = await fetch('http://localhost:5001/api/users/login', 
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: _body,
+        });
+
+        console.log("UserName: " + response.username);
+        const data = await response.json();
+        console.log("Data:" + data);
+
+        // Check if login was successfull!
+        if (response.ok)
+        {
+            const userDataJSON = JSON.stringify(data);
+            console.log('Login successfull! ' + userDataJSON);
+
+            localStorage.setItem('user', userDataJSON);
+            console.log("Data Should be saved in form of: " + userDataJSON);
+            window.location.href = "officialpage.html";
+        }
+        else
+        {
+            console.error('Login failed!');
+        }
+
+        } catch (error) {
+            console.error("Error during login: ", error);
+            alert('Error during login. Please try again.');
+        }
+
+    });
+</script>
+
+
+</div>
+</body>
+</html>

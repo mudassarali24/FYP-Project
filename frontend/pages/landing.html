@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMT Store</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/landing.css" />
+  </head>
+  <body>
+    <header>
+      <div class="navbar">
+        <div class="nav-logo" id="home-btn">
+          <div class="logo">
+        </div>
+        </div>
+
+        <div class="nav-address">
+          <p class="first-add">Deliver to</p>
+
+          <div class="add-icon">
+            <i class="fa-solid fa-location-dot"></i>
+            <p class="sec-add">Pakistan</p>
+          </div>
+        </div>
+
+        <div class="search-nav">
+          <select class="select-op">
+            <option>All</option>
+          </select>
+          <input placeholder="search " class="input-ama" />
+          <div class="search-icon">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+        </div>
+
+        <div class="nav-signin border">
+          <!-- <p><span>Sign In</span></p> -->
+          <button class="login-btn border" id="sign-in-btn">Sign In</button>
+        </div>
+
+        <div class="nav-return border" id="returns-orders">
+          <p><span>Returns</span></p>
+          <p class="nav-second">& Orders</p>
+        </div>
+
+        <div class="nav-cart border">
+          <button class="cart-btn border" id="cart-btn">
+          <i class="fa-solid fa-cart-shopping"></i>Cart</button>
+        </div>
+
+       
+        </div>
+      </div>
+      <!-- <div class="panel">
+        <div class="panel-all">
+            <i class="fa-solid fa-bars"></i>
+            All
+        </div>
+        <div class="panel-ops">
+            <p>Today's Deal</p>
+            <p>Customer Service</p>
+            <p>Registry</p>
+            <p>Gift Cards</p>
+            <p>Sell</p>
+        </div>
+        <div class="gaming-store">
+           Flash Sale ⚡
+        </div>
+        </div> -->
+    </header>
+
+    <div class="hero-section">
+<div class="hero-msg">
+    <p>You are on SMTstore.com . You can shop For millions of products with fast local delivery.
+</div>
+    </div>
+
+    <div class="shop-section" id="shop-section">
+    </div>
+    <footer>
+        <section class="footer-upper">
+          <div class="container">
+            <div class="footer-links">
+              <h4>Get to Know Us</h4>
+              <ul>
+                <li>Careers</li>
+                <li>Blog</li>
+                <li>About Amazon</li>
+                <li>Investors Relation</li>
+                <li>Gift Cards</li>
+              </ul>
+            </div>
+            <div class="footer-links">
+              <h4>Orange Store</h4>
+              <ul>
+                <li>Find a Store</li>
+                <li>Today at Orange</li>
+                <li>Financing</li>
+                <li>Orange Camp</li>
+                <li>Order Status</li>
+              </ul>
+            </div>
+            <div class="footer-links">
+              <h4>Education & Business</h4>
+              <ul>
+                <li>Orange & Education</li>
+                <li>Shop for Collage</li>
+                <li>Orange & Business</li>
+                <li>Shop for Business</li>
+                <li>Jobs</li>
+              </ul>
+            </div>
+            <div class="footer-links">
+              <h4>About Orange</h4>
+              <ul>
+                <li>Newsroom</li>
+                <li>Orange Leadership</li>
+                <li>Investors</li>
+                <li>Events</li>
+                <li>Contact Orange</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="footer-lower">
+          <img src="./images/Full log.png" width="150px" height="auto" alt="logo">
+        </section>
+      </footer> 
+
+      <div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+
+            document.getElementById("home-btn").addEventListener("click", function () {
+              window.location.href = "officialpage.html";
+            });
+            const signInBtn = document.getElementById("sign-in-btn");
+            const cartBtn = document.getElementById("cart-btn");
+            const user = localStorage.getItem('user');
+            const userData = JSON.parse(user);
+            console.log("Raw user data from localstorage: ", user);
+            if (userData)
+            {
+            console.log("Username Found: " + userData.username);
+            }
+
+            if (!user) 
+            {
+              signInBtn.textContent = "Sign In"; 
+            }
+            else
+            {
+              signInBtn.textContent = userData.username;
+            }
+            signInBtn.addEventListener("click", function() {
+              window.location.href = "login.html";
+            });
+
+            const shopSection = document.getElementById('shop-section');
+
+           
+            document.getElementById("returns-orders").addEventListener("click", function() {
+              window.location.href = "transaction.html";
+            });
+
+            cartBtn.addEventListener("click", function() {
+              window.location.href = "cart.html";
+            });
+
+
+            // Fetching items from backend
+            fetch('http://localhost:5001/api/items')
+              .then(response => response.json())
+              .then(items => 
+              {
+                // Iterate over each fetched item and create HTML for them
+                items.forEach(item =>
+                {
+                    const itemElement = createItemElement(item);
+                    console.log(item._id);
+                    shopSection.appendChild(itemElement);
+                });
+              })
+              .catch(error => 
+              {
+                console.error("Error fetching items: ", error)
+              });
+
+              function createItemElement(item)
+              {
+                const box = document.createElement('div');
+                box.classList.add('box1', 'box');
+
+                const boxImg = document.createElement('div');
+                boxImg.classList.add('box-img');
+
+                const image = document.createElement('img');
+                image.src = "../public/images/" + item.image;
+                image.alt = item.title;
+
+                boxImg.appendChild(image);
+
+                const boxContent = document.createElement('h2');
+                boxContent.classList.add('box-content');
+                boxContent.textContent = item.title;
+
+                box.appendChild(boxImg);
+                box.appendChild(boxContent);
+
+                image.addEventListener("click", function() {
+                  window.location.href = "itemdetails.html?id="+item._id;
+                });
+
+                return box;
+              }
+
+          });
+        </script>
+
+      </div>
+
+
+
+  </body>
+</html>

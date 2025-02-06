@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaction Details</title>
+    <link rel="stylesheet" href="../styles/transaction.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo" id="home-btn">
+        <img src="./images/Full log.png" alt="SMT Store" />
+        <h1>Transaction Area</h1>
+      </div>
+    </header>
+    <aside>
+      <section class="sidebar">
+        </div>
+      </section>
+      <section class="youritems">
+        <div class="yitems">
+          <h1>Your Name</h1>
+        </div>
+        <div class="listing">
+          <ul>
+            <li>Item Name
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+              <ol>Hammer</ol>
+            </li>
+            <li>Quantity
+              <ol>250</ol>
+              <ol>190</ol>
+              <ol>360</ol>
+              <ol>522</ol>
+              <ol>10</ol>
+              <ol>89</ol>
+              <ol>264</ol>
+              <ol>89</ol>
+              <ol>133</ol>
+              <ol>560</ol>
+            </li>
+            <li>TransactionDate
+              <ol>03:10</ol>
+              <ol>04:20</ol>
+              <ol>05:30</ol>
+              <ol>06:40</ol>
+              <ol>07:50</ol>
+              <ol>08:60</ol>
+              <ol>09:70</ol>
+              <ol>10:80</ol>
+              <ol>11:90</ol>
+              <ol>12:00</ol>
+            </li>
+            <li>Price
+              <ol>$250</ol>
+              <ol>$190</ol>
+              <ol>$360</ol>
+              <ol>$522</ol>
+              <ol>$10</ol>
+              <ol>$89</ol>
+              <ol>$264</ol>
+              <ol>$89</ol>
+              <ol>$133</ol>
+              <ol>$560</ol>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </aside>
+
+    <script>
+
+      document.getElementById("home-btn").addEventListener("click", function () {
+        window.location.href = "officialpage.html";
+      });
+
+      function getUserIDFromToken(token) {
+            try {
+                const payloadBase64 = token.split('.')[1];
+                const payload = JSON.parse(atob(payloadBase64));
+                return payload.id;
+            } catch (error) {
+                console.error("Error decoding JWT: ", error);
+                return null;
+            }
+      }
+
+      const user = JSON.parse(localStorage.getItem("user"));
+      const token = user?.token;
+
+      if (!token) {
+          console.error("User token not found in localstorage.");
+      }
+      console.log("Token " + token);
+
+
+      const userID = getUserIDFromToken(token);
+
+      if (!userID) {
+          console.error("Unable to extract userID from token.");
+      }
+
+      console.log("User ID: " + userID);
+
+      async function fetchTransactions() {
+        if (!userID) {
+          console.error("User ID not found in localStorage.");
+          return;
+        }
+
+        try {
+          const response = await fetch("http://localhost:5001/api/transactions/fetch?userID="+userID,{
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch transactions");
+          }
+          const transactions = await response.json();
+          displayTransactions(transactions);
+        } catch (error) {
+          console.error("Error fetching transactions: ", error);
+        }
+      }
+
+      async function displayTransactions(transactions) {
+      const listingElement = document.querySelector(".listing");
+      listingElement.innerHTML = ""; // Clear existing content
+
+      if (transactions.length === 0) {
+          listingElement.innerHTML = `<p>No transactions found.</p>`;
+          return;
+      }
+
+      // Create the main list
+      const mainList = document.createElement("ul");
+
+      // Create the headers for the four categories
+      const itemNameList = document.createElement("li");
+      itemNameList.textContent = "Item Name";
+      const quantityList = document.createElement("li");
+      quantityList.textContent = "Quantity";
+      const transactionDateList = document.createElement("li");
+      transactionDateList.textContent = "TransactionDate";
+      const priceList = document.createElement("li");
+      priceList.textContent = "Price";
+
+      // Loop through transactions and populate the lists
+      transactions.forEach(transaction => {
+          const { items, transactionDate } = transaction;
+
+          const transactionDateObject = new Date(transactionDate);
+          const formattedDate = transactionDateObject.toISOString().split("T")[0];
+          const formattedTime = transactionDateObject.toTimeString().split(" ")[0].slice(0, 5);
+          const formattedDateTime = formattedDate + " | " + formattedTime;
+
+          items.forEach(item => {
+              // Add to Item Name list
+              const itemName = document.createElement("ol");
+              itemName.textContent = item.itemID?.title || "Unknown Item"; // Handle missing titles
+              itemNameList.appendChild(itemName);
+
+              // Add to Quantity list
+              const quantity = document.createElement("ol");
+              quantity.textContent = item.quantity;
+              quantityList.appendChild(quantity);
+
+              // Add to Transaction Date list
+              const date = document.createElement("ol");
+              date.textContent = formattedDateTime;
+              transactionDateList.appendChild(date);
+
+              // Add to Price list
+              const price = document.createElement("ol");
+              price.textContent = `$${item.price.toFixed(2)}`;
+              priceList.appendChild(price);
+          });
+      });
+
+      // Append all category lists to the main list
+      mainList.appendChild(itemNameList);
+      mainList.appendChild(quantityList);
+      mainList.appendChild(transactionDateList);
+      mainList.appendChild(priceList);
+
+      // Append the main list to the listing element
+      listingElement.appendChild(mainList);
+    }
+
+      fetchTransactions();
+
+    </script>
+
+  </body>
+</html>

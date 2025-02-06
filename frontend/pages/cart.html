@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="../styles/cart.css">
+</head>
+<body>
+    <div class="cart-container">
+        <h1>Shopping Cart</h1>
+        <div id="cart-items">
+        </div>
+
+        <div id="checkout-details" class="checkout-details">
+            <h3>Total: $<span id="total-price">0.00</span></h3>
+            <button id="checkout-btn" class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        const cartItemsContainer = document.getElementById("cart-items");
+        const totalPriceElement = document.getElementById("total-price");
+
+        async function fetchItemDetails(itemId) {
+            try {
+                const response = await fetch("http://localhost:5001/api/items/"+itemId);
+                if (!response.ok) throw new Error("Fail to fetch item details!");
+                const item = await response.json();
+                return item;
+            } catch (error) {
+                console.error("Error fetching item details: ", error);
+                return null;
+            }
+        }
+
+        function createCartItemElement(item, cartItem, itemTotalPrice) {
+            const cartItemElement = document.createElement("div");
+            cartItemElement.classList.add("cart-item");
+
+            const image = document.createElement("img");
+            image.src = "../public/images/" + item.image;
+            image.alt = item.title;
+            cartItemElement.appendChild(image);
+
+            const details = document.createElement("div");
+            details.classList.add("cart-item-details");
+
+            const title = document.createElement("h4");
+            title.textContent = item.title;
+            details.appendChild(title);
+
+            const priceQuantity = document.createElement("span");
+            priceQuantity.textContent = "Price: $" + item.price.toFixed(2) + " | Quantity: " + cartItem.quantity;
+            details.appendChild(priceQuantity);
+
+            cartItemElement.appendChild(details);
+
+            const totalPrice = document.createElement("span");
+            totalPrice.textContent = "$"+itemTotalPrice.toFixed(2);
+            cartItemElement.append(totalPrice);
+
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.setAttribute("data-id", cartItem.id);
+            removeBtn.addEventListener("click", function () {removeFromCart(cartItem.id)});
+
+            cartItemElement.appendChild(removeBtn);
+            return cartItemElement;
+        }
+
+        async function renderCart() {
+            cartItemsContainer.innerHTML = "";
+            let totalPrice = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `<p class="empty-message">Your cart is empty.</p>`;
+                totalPriceElement.textContent = "0.00";
+                return;
+            }
+
+
+            for (const cartItem of cart) {
+                const item = await fetchItemDetails(cartItem.id);
+                if (!item) continue;
+
+                console.log("Fetched Item: " + item.image);
+
+                const itemTotalPrice = item.price * cartItem.quantity;
+                totalPrice += itemTotalPrice;
+
+                const cartItemElement = createCartItemElement(item, cartItem, itemTotalPrice);
+                cartItemsContainer.appendChild(cartItemElement);
+            }
+
+            totalPriceElement.textContent = totalPrice.toFixed(2);
+        }
+
+        function removeFromCart(itemId) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+
+            if (itemIndex !== -1) {
+                const removedItem = cart[itemIndex];
+
+                cart.splice(itemIndex, 1);
+                localStorage.setItem("cart", JSON.stringify(cart));
+                renderCart();
+            }
+        }
+
+        function getUserIDFromToken(token) {
+            try {
+                const payloadBase64 = token.split('.')[1];
+                const payload = JSON.parse(atob(payloadBase64));
+                return payload.id;
+            } catch (error) {
+                console.error("Error decoding JWT: ", error);
+                return null;
+            }
+        }
+
+        async function handlePurchase() {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+
+            if (!token) {
+                console.error("User token not found in localstorage.");
+                return;
+            }
+
+            const userID = getUserIDFromToken(token);
+
+            if (!userID) {
+                console.error("Unable to extract userID from token.");
+                return;
+            }
+
+            const response = await fetch("http://localhost:5001/api/items/purchase", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({userID, items: cart})
+            })
+
+            const result = await response.json();
+
+            cart = [];
+            localStorage.removeItem("cart");
+            renderCart();
+        }
+
+        renderCart();
+
+        document.getElementById("checkout-btn").addEventListener("click", async function () {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            try 
+            {
+                handlePurchase();
+            } catch (error)
+            {
+                console.error("Error during checkout: ", error);
+                alert("An error occurred while processing your checkout!");
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    /* background-image: url(./images/plainbluebg.png); */
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: "Inter";
+    font-weight: 47px;
+    background-color: #282e57;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 200px;
+    padding: 20px 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .container {
+    padding: 20px;
+    width: 40%;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column; /* Ensure children elements are stacked */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for a nice look */
+    border-radius: 10px; /* Optional rounded corners */
+    /* margin-top: 200px; */
+    padding: 20px 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .home {
+    margin-top: 0px;
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .home button {
+    margin-top: 50px;
+    background-color: #ff4d00;
+  }
+  
+  .home h1 {
+    font-size: 35px;
+    margin: 0 auto;
+    padding-left: 50px;
+    padding-bottom: 50px;
+    color: white;
+    text-align: center;
+  }
+  
+  button {
+    color: antiquewhite;
+    font-size: 22px;
+    width: 300px;
+    padding: 10px 30px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    text-transform: capitalize;
+    text-decoration: solid;
+  }
+  
+  button:hover {
+    cursor: pointer;
+    /* opacity: 90%; */
+  }
+  
+  .username {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+  }
+  
+  .password {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  .email {
+    color: #282e57;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone-no {
+    display: flex;
+    flex-direction: column;
+  }
+  .name {
+    display: flex;
+    flex-direction: column;
+  }
+  input {
+    padding: 5px 20px;
+    font-size: 18px;
+  }
+  .go-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    margin-top: 50px;
+  }
+  .go-btn button {
+    background-color: #ff4d00;
+  }
+  
+  .logo {
+    background-image: url(./images/Full\ log.png);
+    margin-top: -200px;
+    margin-left: -30px;
+    height: 320px;
+  }
+  
+  .logo1 {
+    background-image: url(./images/Full\ log.png);
+    background-size: auto;
+    margin-top: -200px;
+    margin-left: -30px;
+    height: 250px;
+    width: 100%;
+  }
+  
+  a{
+    text-decoration: none;
+    color: aliceblue;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; Ensure the form is centered vertically */
+    margin: 0;
+  }
+  
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"] {
+    width: 120%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+  }
+  
+  form input[type="text"]:focus,
+  form input[type="email"]:focus,
+  form input[type="password"]:focus {
+    border-color: #e74b0d;
+    box-shadow: 0 0 5px #e74b0d;
+    background-color: #f0f8ff;
+    outline: none;
+  }
+  
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"] {
+    background-color: #f9f9f9;
+  }
+  
+  
+  form button {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #e74b0d;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  #loginForm button:hover {
+    background-color: #b33909;
+  }
+  
+  .register-text {
+    margin-top: 20px;
+  }

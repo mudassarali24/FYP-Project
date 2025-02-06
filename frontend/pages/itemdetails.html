@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Product Page</title>
+    <link rel="stylesheet" href="../styles/itemdetails.css">
+</head>
+<body>
+    <section class="product-container">
+        <!-- left side -->
+        <div class="img-card">
+            <img alt="" id="featured-image">
+        </div>
+        <!-- Right side -->
+        <div class="product-info">
+            <h3>LEVI'S® WOMEN'S XL TRUCKER JACKET</h3>
+            <h5>Price: $140 <del>$170</del></h5>
+
+            <!-- <div class="sizes">
+                <p>Size:</p>
+                <select name="Size" id="size" class="size-option">
+                    <option value="xxl">XXL</option>
+                    <option value="xl">XL</option>
+                    <option value="medium">Medium</option>
+                    <option value="small">Small</option>
+                </select>
+            </div> -->
+
+            <div class="quantity">
+                <input type="number" value="1" min="1" id="quantityIF">
+                <button id="add-to-cart-btn">Add to Cart</button>
+            </div>
+
+            <div>
+                <p>Delivery:</p>
+                <p>Free standard shipping on orders over $35 before tax, plus free returns.</p>
+        </div>
+    </section>
+
+    <script>
+        function getQueryParam(param)
+        {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const itemId = getQueryParam('id');
+
+        if (itemId) 
+        {
+            console.log(itemId);
+            fetch("http://localhost:5001/api/items/"+itemId)
+            .then(response => response.json())
+            .then(item => {
+                document.getElementById('featured-image').src = "../public/images/"+item.image;
+                document.querySelector('.product-info h3').textContent = item.title;
+                document.querySelector('.product-info h5').innerHTML = "Price: $"+item.price;
+                document.getElementById('quantityIF').max = item.stock;
+            })
+            .catch(error => {
+                console.error("Error fetchig item details: ", error);
+            });
+        }
+        else
+        {
+            console.error("No Item ID provided in Query!");
+        }
+
+        document.getElementById("add-to-cart-btn").addEventListener("click", function() 
+        {
+
+            const id = itemId;
+            const quantity = parseInt(document.getElementById("quantityIF").value, 10);
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            const existingItemIndex = cart.findIndex(item => item.id === itemId);
+
+            if (existingItemIndex !== -1)
+            {
+                cart[existingItemIndex].quantity = quantity;
+            }
+            else
+            {
+                cart.push({id: itemId, quantity: quantity});
+            }
+
+            const itemJSON = JSON.stringify(cart);
+            localStorage.setItem("cart", itemJSON);
+            console.log("Item Data: " + itemJSON + " successfully added to cart!");
+        });
+
+    </script>
+
+</body>
+</html>
